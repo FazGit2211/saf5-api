@@ -1,8 +1,8 @@
 import playerModel from "../models/playerModel.js";
-export default class PlayerController{
+export default class PlayerController {
     player = new playerModel();
 
-    getAll = async(req,res)=>{
+    getAll = async (req, res) => {
         try {
             let players = await this.player.getAll();
             res.json(players);
@@ -11,16 +11,21 @@ export default class PlayerController{
         }
     }
 
-    postPlayer = async(req,res) => {
+    postPlayer = async (req, res) => {
         try {
-            const player = {
-                nombre:req.body.nombre,
-                apellido:req.body.apellido,
-                telefono:req.body.telefono,
-                email:req.body.email,
-                estado:"Pendiente",
+            const playerNew = {
+                nombre: req.body.nombre,
+                apellido: req.body.apellido,
+                telefono: req.body.telefono,
+                email: req.body.email,
+                estado: "Pendiente",
             }
-            res.json(player);
+            if ((playerNew.nombre === "") || (playerNew.apellido === "") || (playerNew.email === "")) {
+                res.status(404).json({ err: true, message: "Empty values" });
+            } else {
+                let createPlayer = await this.player.createNew(playerNew);
+                res.status(200).json({ err: false, message: createPlayer });
+            }
         } catch (error) {
             throw { status: 500, message: error };
         }
