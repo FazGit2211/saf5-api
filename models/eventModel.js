@@ -16,11 +16,11 @@ export default class Event {
     };
 
     //Método para crear
-    /*createNew = async (event) => {
+    createNew = async (event) => {
         try {
-            await db.query("INSERT INTO personas (nombre,apellido,telefono,estado) VALUES(?,?,?,?)", [player.nombre, player.apellido, player.telefono, player.estado]);
+            await db.query("INSERT INTO eventos(nombre,direccion) VALUES(?,?)",[event.nombre,event.direccion]);
         } catch (error) {
             throw { status: 500, message: "Error al crear los datos" }
         }
-    }*/
+    }
 }

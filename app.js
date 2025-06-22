@@ -17,4 +17,4 @@ app.use(routesPlayer);
 
 app.listen(port, () => {
     console.log(`API listen in port ${port}`);
-})
+});

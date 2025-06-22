@@ -50,5 +50,5 @@ export default class Player {
         } catch (error) {
             throw { status: 500, message: "Error delete record" }
         }
-    }
+    };
 }
