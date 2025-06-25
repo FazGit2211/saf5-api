@@ -1,51 +1,72 @@
 import { Player } from "../models/playerModelSequelize.js";
-import sequelize from "../config/dbSequelize.js";
+
 export default class PlayerSequelizeController {
 
     getAll = async (req, res) => {
         try {
-            await sequelize.authenticate();
-            await Player.sync();
             const players = await Player.findAll();
             res.status(200).json(players);
         } catch (error) {
-            res.status(500).json({ err: true, message: 'Error get all' })
-        } finally {
-            await sequelize.close();
-        }
+            res.status(500).json({ ok: false, statusCode: 500, message: 'Error get all' })
+        } ;
     };
 
-    getById = async (id) => {
+    getById = async (req, res) => {
         try {
-            const [player] = await db.query("SELECT * FROM personas WHERE persona_id = ?", [id]);
-            return player;
+            const id = parseInt(req.params.id); 
+            const player = await Player.findByPk(id);
+            res.status(200).json(player);
         } catch (error) {
-            throw { status: 500, message: `Error get by id ${id}` }
-        }
+            res.status(500).json({ ok: false, statusCode: 500, message: `Error get by id ${id}` })
+        };
     };
 
-    createNew = async (player) => {
+    createNew = async (req, res) => {
         try {
-            await db.query("INSERT INTO personas(nombre,apellido,telefono,email,estado) VALUES(?,?,?,?,?)", [player.nombre, player.apellido, player.telefono, player.email, player.estado]);
+            const playerNew = {
+                nombre: req.body.nombre,
+                apellido: req.body.apellido,
+                telefono: req.body.telefono,
+                email: req.body.email,
+                estado: "Pendiente",
+            };
+            if ((playerNew.nombre === "") || (playerNew.apellido === "") || (playerNew.email === "")) {
+                res.status(404).json({ ok: false, message: "Empty values" });
+            } else {
+                await Player.create(playerNew);
+                res.status(201).json({ ok: true, statusCode: 201, message: "Created Record" });
+            }
         } catch (error) {
-            throw { status: 500, message: "Error create record" }
-        }
+            res.status(500).json({ ok: false, statusCode: 500, message: "Error create record" })
+        };
     };
 
 
-    update = async (player) => {
+    update = async (req, res) => {
         try {
-            await db.query("UPDATE personas SET nombre = ?,apellido = ?,telefono = ?,email = ?,estado = ? WHERE persona_id = ?", [player.nombre, player.apellido, player.telefono, player.email, player.estado, player.persona_id]);
+            const id = parseInt(req.params.id);
+            const playerEdit = {
+                nombre: req.body.nombre,
+                apellido: req.body.apellido,
+                telefono: req.body.telefono,
+                email: req.body.email,
+                estado: req.body.estado,
+                persona_id: id,
+            };
+            await Player.update(playerEdit, { where: { id: id } });
+            res.status(200).json({ ok: true, statusCode: 200, message: "Update ok" });
         } catch (error) {
-            throw { status: 500, message: "Error edit record" }
-        }
+            res.status(500).json({ ok: false, statusCode: 500, message: "Error Updated record" });
+        } ;
     };
 
-    delete = async (id) => {
+    delete = async (req, res) => {
         try {
-            await db.query("DELETE FROM personas WHERE persona_id = ?", [id]);
+            const id = parseInt(req.params.id);
+            await Player.destroy({ where: { id: id } });
+            res.status(200).json({ ok: true, statusCode: 200, message: "Deleted Record" });
         } catch (error) {
-            throw { status: 500, message: "Error delete record" }
-        }
+            res.status(500).json({ ok: false, statusCode: 500, message: "Error Deleted Record" });
+        };
     };
 }

@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbSequelize.js";
 
-const Player = sequelize.define('Jugador',{
+const Player = sequelize.define('Jugadore',{
     nombre:{
         type:DataTypes.STRING,
         allowNull:false
@@ -23,6 +23,4 @@ const Player = sequelize.define('Jugador',{
         allowNull:true
     }
 });
-
-console.log( Player === sequelize.models.Jugador);
 export {Player};

@@ -4,8 +4,8 @@ import PlayerSequelizeController from "../controllers/playerSequelizeController.
 const routes = Router();
 const playerController = new PlayerSequelizeController();
 routes.get("/players",playerController.getAll);
-//routes.post("/player",playerController.postPlayer);
-//routes.get("/player/:id",playerController.getById);
-//routes.put("/player/:id",playerController.editPlayer);
-//routes.delete("/player/:id",playerController.deletePlayer);
+routes.post("/player",playerController.createNew);
+routes.get("/player/:id",playerController.getById);
+routes.put("/player/:id",playerController.update);
+routes.delete("/player/:id",playerController.delete);
 export default routes;
