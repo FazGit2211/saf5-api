@@ -1,65 +1,63 @@
-import stadiumModel from "../models/stadiumModel.js";
-export default class StadiumController {
-    stadium = new stadiumModel();
+import StadiumService from "../services/stadiumService.js";
 
-    getAll = async (req, res) => {
-        try {
-            let stadiums = await this.stadium.getAll();
-            res.json(stadiums);
-        } catch (error) {
-            throw { status: 500, message: "Error controller get all" }
-        }
-    };
+const stadiumService = new StadiumService();
 
-    getById = async (req, res) => {
-        try {
-            const id = parseInt(req.params.id);
-            const stadium = await this.stadium.getById(id);
-            res.status(200).json(stadium);
-        } catch (error) {
-            throw { status: 500, message: "Error controller get by id" }
+export const getAll = async (req, res) => {
+    try {
+        const stadiums = await stadiumService.getAll();
+        if (stadiums.length === 0) {
+            res.status(200).json({ message: "Not found stadiums", data: [] })
         }
-    };
+        res.status(200).json(stadiums);
+    } catch (error) {
+        res.status(500).json({ ok: false, statusCode: 500, message: 'Error get all' });
+    }
+};
 
-    createNew = async (req, res) => {
-        try {
-            const stadiumNew = {
-                nombre: req.body.nombre,
-                direccion: req.body.direccion,
-            };
-            if ((stadiumNew.nombre === "") || (stadiumNew.direccion === "")) {
-                res.status(404).json({ err: true, message: "Empty values" });
-            } else {
-                await this.stadium.createNew(stadiumNew);
-                res.status(200).json({ err: false, message: "Created ok" });
-            }
-        } catch (error) {
-            throw { status: 500, message: "Error create" };
-        }
-    };
+export const getById = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const stadium = await stadiumService.getById(id);
+        res.status(200).json(stadium);
+    } catch (error) {
+        res.status(500).json({ ok: false, statusCode: 500, message: 'Error get' });
+    }
+};
 
-    edit = async (req, res) => {
-        try {
-            const id = parseInt(req.params.id);
-            const stadiumEdit = {
-                nombre: req.body.nombre,
-                direccion: req.body.direccion,
-                cancha_id: id,
-            };
-            await this.stadium.edit(stadiumEdit);
-            res.status(200).json({ err: false, message: "Update record ok" })
-        } catch (error) {
-            throw { status: 500, message: "Error update record" };
+export const createNew = async (req, res) => {
+    try {
+        const stadiumCreated = await stadiumService.createNew(req.body);
+        if (stadiumCreated.equals(null)) {
+            res.status(200).json({ message: "Empty values" });
         }
-    };
+        res.status(200).json(stadiumCreated);
+    } catch (error) {
+        res.status(500).json({ ok: false, statusCode: 500, message: 'Error created record' });
+    }
+};
 
-    delete = async(id) => {
-        try {
-            const id = parseInt(req.params.id);
-            await this.stadium.delete(id);
-            res.status(200).json({ err: false, message: "Delete record" });
-        } catch (error) {
-            throw { status: 500, message: "Error delete record" };
+export const update = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const stadiumEdit = await stadiumService.edit(req.body, id);
+        if (stadiumEdit.equals(null)) {
+            res.status(200).json({ message: "Empty values" });
         }
-    };
-}
+        res.status(200).json({ err: false, message: "Update record ok", data: stadiumEdit })
+    } catch (error) {
+        throw { status: 500, message: "Error update record" };
+    }
+};
+
+export const deleteById = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const stadiumDeleted = await stadiumService.deleteById(id);
+        if (stadiumDeleted.equals(null)) {
+            res.status(200).json({ message: "Empty id values" });
+        }
+        res.status(200).json({ err: false, message: "Deleted record", data: stadiumDeleted });
+    } catch (error) {
+        throw { status: 500, message: "Error delete record" };
+    }
+};

@@ -1,12 +1,11 @@
 import { Router } from "express";
-import EventSequelizeController from "../controllers/eventSequelizeController.js";
-
+import { getAll, createNew, getById, update, deleteById } from "../controllers/eventController.js";
 
 const routes = Router();
-const eventController = new EventSequelizeController;
-routes.get("/events", eventController.getAll);
-routes.post("/event", eventController.createNew);
-routes.get("/event/:id", eventController.getById);
-routes.put("/event/:id", eventController.update);
-routes.delete("/event/:id", eventController.delete);
+
+routes.get("/events", getAll);
+routes.post("/event", createNew);
+routes.get("/event/:id", getById);
+routes.put("/event/:id", update);
+routes.delete("/event/:id", deleteById);
 export default routes;

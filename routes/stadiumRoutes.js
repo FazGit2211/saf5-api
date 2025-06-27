@@ -1,11 +1,10 @@
 import { Router } from "express";
-import StadiumSequelizeController from "../controllers/stadiumSequelizeController.js";
-
+import { getAll, createNew, getById, update, deleteById } from "../controllers/stadiumController.js";
 const routes = Router();
-const stadiumController = new StadiumSequelizeController;
-routes.get("/stadiums", stadiumController.getAll);
-routes.post("/stadium", stadiumController.createNew);
-routes.get("/stadium/:id", stadiumController.getById);
-routes.put("/stadium/:id", stadiumController.update);
-routes.delete("/stadium/:id", stadiumController.delete);
+
+routes.get("/stadiums", getAll);
+routes.post("/stadium", createNew);
+routes.get("/stadium/:id", getById);
+routes.put("/stadium/:id", update);
+routes.delete("/stadium/:id", deleteById);
 export default routes;

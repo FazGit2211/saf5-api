@@ -1,17 +1,26 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbSequelize.js";
-import { Event } from "./eventModelSequelize.js";
-
 const Stadium = sequelize.define('Estadio', {
+    stadiumId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false
+    }
+    ,
     nombre: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    direccion:{
+    direccion: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    eventId: {
+        type: DataTypes.INTEGER,
+        unique: true,
+        allowNull: false
     }
 });
-Stadium.hasOne(Event);
-Event.belongsTo(Stadium);
-export {Stadium};
+
+
+export { Stadium };

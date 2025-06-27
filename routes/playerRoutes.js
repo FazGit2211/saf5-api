@@ -1,11 +1,10 @@
 import { Router } from "express";
-import PlayerSequelizeController from "../controllers/playerSequelizeController.js";
-
+import { getAll, createNew, getById, update, deleteById } from "../controllers/playerControlller.js";
 const routes = Router();
-const playerController = new PlayerSequelizeController();
-routes.get("/players",playerController.getAll);
-routes.post("/player",playerController.createNew);
-routes.get("/player/:id",playerController.getById);
-routes.put("/player/:id",playerController.update);
-routes.delete("/player/:id",playerController.delete);
+
+routes.get("/players", getAll);
+routes.post("/player", createNew);
+routes.get("/player/:id", getById);
+routes.put("/player/:id", update);
+routes.delete("/player/:id", deleteById);
 export default routes;

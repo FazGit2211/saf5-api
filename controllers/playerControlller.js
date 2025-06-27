@@ -1,71 +1,67 @@
-import playerModel from "../models/playerModel.js";
-export default class PlayerController {
-    player = new playerModel();
+import PlayerService from "../services/playerService.js";
 
-    getAll = async (req, res) => {
-        try {
-            let players = await this.player.getAll();
-            res.json(players);
-        } catch (error) {
-            throw { status: 500, message: "Error get all" };
+const playerService = new PlayerService();
+
+export const getAll = async (req, res) => {
+    try {
+        const players = await playerService.getAll();
+        if (players.length === 0) {
+            res.status(200).json({ message: "No players found", data: [] });
         }
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ ok: false, statusCode: 500, message: 'Error get all' })
     };
+};
 
-    getById = async (req, res) => {
-        try {
-            const id = parseInt(req.params.id);
-            let player = await this.player.getById(id);
-            res.json(player);
-        } catch (error) {
-            throw { status: 500, message: `Error get by id ${id}` };
+export const getById = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const playerFind = await playerService.getById(id);
+        if (playerFind.equals(null)) {
+            res.status(200).json({ ok: true, statusCode: 200, message: "Empty id value" });
         }
+        res.status(200).json(playerFind);
+    } catch (error) {
+        res.status(500).json({ ok: false, statusCode: 500, message: `Error get by id ${id}` })
     };
+};
 
-    postPlayer = async (req, res) => {
-        try {
-            const playerNew = {
-                nombre: req.body.nombre,
-                apellido: req.body.apellido,
-                telefono: req.body.telefono,
-                email: req.body.email,
-                estado: "Pendiente",
-            }
-            if ((playerNew.nombre === "") || (playerNew.apellido === "") || (playerNew.email === "")) {
-                res.status(404).json({ err: true, message: "Empty values" });
-            } else {
-                await this.player.createNew(playerNew);
-                res.status(200).json({ err: false, message: "Created ok" });
-            }
-        } catch (error) {
-            throw { status: 500, message: "Error create" };
+export const createNew = async (req, res) => {
+    try {
+        const playerCreated = await playerService.createNew(req.body);
+        if (playerCreated.equals(null)) {
+            res.status(200).json({ ok: true, statusCode: 200, message: "Empty values" });
         }
+        res.status(200).json(playerCreated);
+    } catch (error) {
+        res.status(500).json({ ok: false, statusCode: 500, message: "Error create record" })
     };
+};
 
-    editPlayer = async (req, res) => {
-        try {
-            const id = parseInt(req.params.id);
-            const playerEdit = {
-                nombre: req.body.nombre,
-                apellido: req.body.apellido,
-                telefono: req.body.telefono,
-                email: req.body.email,
-                estado: req.body.estado,
-                persona_id: id,
-            }
-            await this.player.update(playerEdit);
-            res.status(200).json({ err: false, message: "Update record ok" })
-        } catch (error) {
-            throw { status: 500, message: "Error update record" };
+
+export const update = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const playerEdit = await playerService.update(req.body, id);
+        if (playerEdit.equals(null)) {
+            res.status(200).json({ ok: true, statusCode: 200, message: "Empty values" });
         }
+        res.status(200).json({ ok: true, statusCode: 200, message: "Update ok" });
+    } catch (error) {
+        res.status(500).json({ ok: false, statusCode: 500, message: "Error Updated record" });
     };
+};
 
-    deletePlayer = async (req, res) => {
-        try {
-            const id = parseInt(req.params.id);
-            await this.player.delete(id);
-            res.status(200).json({ err: false, message: "Delete record" })
-        } catch (error) {
-            throw { status: 500, message: "Error delete record" };
+export const deleteById = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const playerDeleted = await playerService.deleteById(id);
+        if (playerDeleted.equals(null)) {
+            res.status(200).json({ ok: true, statusCode: 200, message: "Empty id value" });
         }
-    }
-}
+        res.status(200).json({ ok: true, statusCode: 200, message: "Deleted Record" });
+    } catch (error) {
+        res.status(500).json({ ok: false, statusCode: 500, message: "Error Deleted Record" });
+    };
+};
