@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(routesEvents);
 app.use(routesStadiums);
 app.use(routesPlayer);
-sequelize.sync({ force: false })
+//sequelize.sync({ force: true })
 
 app.listen(port, () => {
     console.log(`API listen in port ${port}`);

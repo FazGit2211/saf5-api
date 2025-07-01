@@ -1,26 +1,17 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbSequelize.js";
-const Stadium = sequelize.define('Estadio', {
-    stadiumId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        allowNull: false
-    }
-    ,
-    nombre: {
+import Event from "./eventModelSequelize.js";
+const Stadium = sequelize.define('Stadium', {
+    name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    direccion: {
+    address: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    eventId: {
-        type: DataTypes.INTEGER,
-        unique: true,
-        allowNull: false
     }
 });
 
-
-export { Stadium };
+Stadium.hasOne(Event, { foreignKey: 'stadiumId' });
+Event.belongsTo(Stadium, { foreignKey: 'stadiumId' });
+export default Stadium;

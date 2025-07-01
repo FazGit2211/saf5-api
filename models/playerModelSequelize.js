@@ -1,22 +1,16 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbSequelize.js";
 
-const Player = sequelize.define('Jugadore', {
-    playerId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        allowNull: false
-    }
-    ,
-    nombre: {
+const Player = sequelize.define('Player', {
+    name: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    apellido: {
+    surname: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    telefono: {
+    phoneNumber: {
         type: DataTypes.STRING,
         allowNull: true
     },
@@ -24,10 +18,10 @@ const Player = sequelize.define('Jugadore', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    estado: {
+    state: {
         type: DataTypes.STRING,
         allowNull: true
     }
 });
 
-export { Player };
+export default Player;

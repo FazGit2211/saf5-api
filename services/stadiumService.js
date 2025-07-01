@@ -1,4 +1,4 @@
-import { Stadium } from "../models/stadiumModelSequelize.js";
+import Stadium from "../models/stadiumModelSequelize.js";
 
 export default class StadiumService {
     getAll = async () => {
@@ -20,7 +20,7 @@ export default class StadiumService {
     createNew = async (stadium) => {
         try {
             const stadiumNew = stadium;
-            if ((stadiumNew.nombre === "") || (stadiumNew.direccion === "")) {
+            if ((stadiumNew.name === "") || (stadiumNew.address === "")) {
                 return null;
             } else {
                 return await Stadium.create(stadiumNew);
@@ -33,7 +33,7 @@ export default class StadiumService {
     edit = async (stadium, id) => {
         try {
             const stadiumEdit = stadium;
-            if ((stadiumEdit.nombre === "") && (stadiumEdit.direccion === "")) {
+            if ((stadiumEdit.name === "") && (stadiumEdit.address === "")) {
                 return null;
             }
             return await Stadium.update(stadiumEdit, { where: { stadiumId: id } });

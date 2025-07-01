@@ -1,4 +1,4 @@
-import { Player } from "../models/playerModelSequelize.js";
+import Player from "../models/playerModelSequelize.js";
 
 export default class PlayerService {
     getAll = async () => {
@@ -22,8 +22,10 @@ export default class PlayerService {
 
     createNew = async (player) => {
         try {
-            const playerNew = player;
-            if ((playerNew.nombre === "") || (playerNew.apellido === "") || (playerNew.email === "")) {
+            const playerNew = {
+                name: player.name, surname: player.surname, phoneNumber: player.phoneNumber, email: player.email, state: "Pendiente"
+            };
+            if ((playerNew.name === "") || (playerNew.surname === "") || (playerNew.email === "")) {
                 return null;
             };
             return await Player.create(playerNew);
@@ -36,7 +38,7 @@ export default class PlayerService {
     update = async (player, id) => {
         try {
             const playerEdit = player;
-            if ((playerEdit.nombre === "") && (playerEdit.apellido === "") && (playerEdit.email === "") && (playerEdit.telefono === "") && (playerEdit.estado === "")) {
+            if ((playerEdit.name === "") && (playerEdit.surname === "") && (playerEdit.email === "") && (playerEdit.phoneNumber === "") && (playerEdit.state === "")) {
                 return null;
             };
             return await Player.create(playerEdit, { where: { playerId: id } });
