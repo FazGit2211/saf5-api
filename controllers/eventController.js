@@ -17,8 +17,8 @@ export const getAll = async (req, res) => {
 
 export const getById = async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
-        const eventFind = await eventService.getById(id);
+        const codigo = req.params.codigo;
+        const eventFind = await eventService.getById(codigo);
         if (eventFind.equals(null)) {
             res.status(200).json({ message: "No event found", data: [] });
         } else {

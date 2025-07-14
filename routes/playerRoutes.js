@@ -2,9 +2,9 @@ import { Router } from "express";
 import { getAll, createNew, getById, update, deleteById } from "../controllers/playerControlller.js";
 const routes = Router();
 
-routes.get("/api/player", getAll);
-routes.post("/api/player", createNew);
-routes.get("/api/player/:id", getById);
-routes.put("/api/player/:id", update);
-routes.delete("/api/player/:id", deleteById);
+routes.get("/", getAll);
+routes.post("/", createNew);
+routes.get("/:id", getById);
+routes.put("/:id", update);
+routes.delete("/:id", deleteById);
 export default routes;

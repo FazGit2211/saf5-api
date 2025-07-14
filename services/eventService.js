@@ -1,6 +1,7 @@
 import sequelize from "../config/dbSequelize.js";
 import Event from "../models/eventModelSequelize.js";
 import Player from "../models/playerModelSequelize.js";
+import Stadium from "../models/stadiumModelSequelize.js";
 
 export default class EventService {
 
@@ -12,9 +13,9 @@ export default class EventService {
         }
     };
 
-    getById = async (id) => {
+    getById = async (codigo) => {
         try {
-            return await Event.findByPk(id);
+            return await Event.findOne({ where: { codigo: codigo }, include: [Player] });
         } catch (error) {
             throw { status: 500, message: "Error get record" };
         }
@@ -23,17 +24,19 @@ export default class EventService {
     createNew = async (event) => {
         const transaction = await sequelize.transaction();
         try {
-            const players = event.players;
-            //crear el objeto evento primero para tener el lado de la relacion de uno 
-            const eventCreated = await Event.create({ date: event.date }, { transaction: transaction });
+            //crear primero el objeto estadio por la relacion uno a uno entre evento
+            const stadiumCreated = await Stadium.create({ name: event.stadium.name, address: event.stadium.address }, { transaction: transaction });
+            //crear el objeto evento y setearle el estadio id y despues relacionar con los jugadores 
+            const eventCreated = await Event.create({ codigo: event.codigo, date: event.date, stadiumId: stadiumCreated.id }, { transaction: transaction });
             //recorrer y asociar a cada uno de los jugadores con el evento para poder crear la relacion del lado muchos
+            const players = event.players;
             const addPlayers = players.map((elem) => ({
                 ...elem, eventId: eventCreated.id, state: "Pendiente"
             }));
             //crear a todos los jugadores al mismo tiempo
             const createPlayers = await Player.bulkCreate(addPlayers, { transaction: transaction });
             await transaction.commit();
-            return { eventCreated, playersCreated: createPlayers };
+            return { eventCreated, playersCreated: createPlayers, stadium: stadiumCreated };
         } catch (error) {
             throw { status: 500, message: "Error created record" };
         }

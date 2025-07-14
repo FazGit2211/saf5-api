@@ -6,6 +6,10 @@ const Event = sequelize.define('Event', {
     date: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    codigo: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 });
 

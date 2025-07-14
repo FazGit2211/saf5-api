@@ -6,14 +6,14 @@ import routesPlayer from "./routes/playerRoutes.js";
 import sequelize from "./config/dbSequelize.js";
 
 const app = express();
-const port = 3000;
+const port = 5000;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(routesEvents);
-app.use(routesStadiums);
-app.use(routesPlayer);
+app.use('/api/event', routesEvents);
+app.use('/api/stadium', routesStadiums);
+app.use('/api/player', routesPlayer);
 //sequelize.sync({ force: true })
 
 app.listen(port, () => {

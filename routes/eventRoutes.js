@@ -3,9 +3,9 @@ import { getAll, createNew, getById, update, deleteById } from "../controllers/e
 
 const routes = Router();
 
-routes.get("/api/event", getAll);
-routes.post("/api/event", createNew);
-routes.get("/api/event/:id", getById);
-routes.put("/api/event/:id", update);
-routes.delete("/api/event/:id", deleteById);
+routes.get("/", getAll);
+routes.post("/", createNew);
+routes.get("/:codigo", getById);
+routes.put("/:id", update);
+routes.delete("/:id", deleteById);
 export default routes;
