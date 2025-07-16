@@ -15,7 +15,7 @@ export default class EventService {
 
     getById = async (codigo) => {
         try {
-            return await Event.findOne({ where: { codigo: codigo }, include: [Player] });
+            return await Event.findOne({ where: { codigo: codigo }, include: [Player, Stadium] });
         } catch (error) {
             throw { status: 500, message: "Error get record" };
         }
