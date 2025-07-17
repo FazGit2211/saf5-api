@@ -1,4 +1,5 @@
 import sequelize from "../config/dbSequelize.js";
+import { EventDto } from "../models/dtos/eventDto.js";
 import Event from "../models/eventModelSequelize.js";
 import Player from "../models/playerModelSequelize.js";
 import Stadium from "../models/stadiumModelSequelize.js";
@@ -15,7 +16,13 @@ export default class EventService {
 
     getById = async (codigo) => {
         try {
-            return await Event.findOne({ where: { codigo: codigo }, include: [Player, Stadium] });
+            const event = await Event.findOne({ where: { codigo: codigo }, include: [Player, Stadium] });
+            const eventJson = event.get();
+            delete eventJson.stadiumId;
+            delete eventJson.createdAt;
+            delete eventJson.updatedAt;
+            const eventDto = new EventDto(eventJson.codigo, eventJson.date, eventJson.stadium, eventJson.players);
+            return eventDto;
         } catch (error) {
             throw { status: 500, message: "Error get record" };
         }
