@@ -13,6 +13,6 @@ const Event = sequelize.define('Event', {
     }
 });
 
-Event.hasMany(Player, { foreignKey: 'eventId' });
-Player.belongsTo(Event, { foreignKey: 'eventId' });
+Event.hasMany(Player);
+Player.belongsTo(Event);
 export default Event;
