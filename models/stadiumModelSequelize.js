@@ -12,6 +12,6 @@ const Stadium = sequelize.define('Stadium', {
     }
 });
 
-Stadium.hasOne(Event, { foreignKey: 'stadiumId' });
-Event.belongsTo(Stadium, { foreignKey: 'stadiumId' });
+Stadium.hasOne(Event);
+Event.belongsTo(Stadium);
 export default Stadium;
