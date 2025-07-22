@@ -1,5 +1,4 @@
 import sequelize from "../config/dbSequelize.js";
-import { EventDto } from "../models/dtos/eventDto.js";
 import Event from "../models/eventModelSequelize.js";
 import Player from "../models/playerModelSequelize.js";
 import Stadium from "../models/stadiumModelSequelize.js";
@@ -8,7 +7,7 @@ export default class EventService {
 
     getAll = async () => {
         try {
-            return await Event.findAll();
+            return await Event.findAll({ include: { model: Player } });
         } catch (error) {
             throw { status: 500, message: "Error get record" };
         }
@@ -16,13 +15,7 @@ export default class EventService {
 
     getById = async (codigo) => {
         try {
-            const event = await Event.findOne({ where: { codigo: codigo }, include: [Player, Stadium] });
-            const eventJson = event.get();
-            delete eventJson.stadiumId;
-            delete eventJson.createdAt;
-            delete eventJson.updatedAt;
-            const eventDto = new EventDto(eventJson.codigo, eventJson.date, eventJson.stadium, eventJson.players);
-            return eventDto;
+            return await Event.findOne({ where: { codigo: codigo }, include: { model: Player } });
         } catch (error) {
             throw { status: 500, message: "Error get record" };
         }
@@ -34,11 +27,11 @@ export default class EventService {
             //crear primero el objeto estadio por la relacion uno a uno entre evento
             const stadiumCreated = await Stadium.create({ name: event.stadium.name, address: event.stadium.address }, { transaction: transaction });
             //crear el objeto evento y setearle el estadio id y despues relacionar con los jugadores 
-            const eventCreated = await Event.create({ codigo: event.codigo, date: event.date, stadiumId: stadiumCreated.id }, { transaction: transaction });
+            const eventCreated = await Event.create({ codigo: event.codigo, date: event.date, StadiumId: stadiumCreated.id }, { transaction: transaction });
             //recorrer y asociar a cada uno de los jugadores con el evento para poder crear la relacion del lado muchos
             const players = event.players;
             const addPlayers = players.map((elem) => ({
-                ...elem, eventId: eventCreated.id, state: "Pendiente"
+                ...elem, EventId: eventCreated.id, state: "Pendiente"
             }));
             //crear a todos los jugadores al mismo tiempo
             const createPlayers = await Player.bulkCreate(addPlayers, { transaction: transaction });
@@ -54,7 +47,7 @@ export default class EventService {
             if (event.date === '') {
                 return 0;
             }
-            const eventEdit = await Event.update({ date: event.date }, { where: { eventId: id } });
+            const eventEdit = await Event.update({ date: event.date }, { where: { id: id } });
             return eventEdit;
         } catch (error) {
             throw { status: 500, message: "Error update record" };
@@ -69,7 +62,7 @@ export default class EventService {
             };
             const eventExist = await Event.findByPk(id, { transaction: transaction });
             if (eventExist) {
-                const playersDeleted = await Player.destroy({ where: { eventId: id } }, { transaction: transaction });
+                const playersDeleted = await Player.destroy({ where: { id: id } }, { transaction: transaction });
                 const eventDeleted = await Event.destroy({ where: { id: id } });
                 await transaction.commit();
                 return { event: eventDeleted, players: playersDeleted };
