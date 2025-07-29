@@ -7,7 +7,7 @@ export default class EventService {
 
     getAll = async () => {
         try {
-            return await Event.findAll({ include: { model: Player } });
+            return await Event.findAll({ include: [Stadium, Player] });
         } catch (error) {
             throw { status: 500, message: "Error get record" };
         }
@@ -15,7 +15,7 @@ export default class EventService {
 
     getById = async (codigo) => {
         try {
-            return await Event.findOne({ where: { codigo: codigo }, include: { model: Player } });
+            return await Event.findOne({ where: { codigo: codigo }, include: [Stadium, Player] });
         } catch (error) {
             throw { status: 500, message: "Error get record" };
         }
