@@ -38,14 +38,14 @@ export const createNew = async (req, res) => {
     }
 };
 
-export const update = async (req, res) => {
+export const updateById = async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
-        const eventEdit = await eventService.update(req.body, id);
-        if (eventEdit.length === 0) {
-            res.status(200).json({ ok: true, statusCode: 200, message: "Empty values ok" });
+        const codigo = req.params.id;
+        if (codigo !== "undefined") {
+            const eventUpdated = await eventService.update(req.body, codigo);
+            res.status(200).json({ ok: true, statusCode: 200, message: "Updated ok", data: eventUpdated });
         } else {
-            res.status(200).json({ ok: true, statusCode: 200, message: "Update ok" });
+            return { ok: true, statusCode: 200, message: "Undefined params" };
         }
     } catch (error) {
         res.status(500).json({ ok: false, statusCode: 500, message: "Error Updated record" });
@@ -54,10 +54,10 @@ export const update = async (req, res) => {
 
 export const deleteById = async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
-        const deleted = await eventService.deleteById(id);
+        const codigo = req.params.id;
+        const deleted = await eventService.deleteById(codigo);
         if (deleted === null) {
-            res.status(200).json({ ok: true, statusCode: 200, message: "Empty values" });
+            res.status(200).json({ ok: true, statusCode: 200, message: "Empty values or event not exist" });
         } else {
             res.status(200).json({ ok: true, statusCode: 200, message: "Deleted ok", data: deleted });
         }

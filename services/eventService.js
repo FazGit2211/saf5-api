@@ -42,30 +42,40 @@ export default class EventService {
         }
     };
 
-    update = async (event, id) => {
+    update = async (event, code) => {
         try {
-            if (event.date === '') {
-                return 0;
-            }
-            const eventEdit = await Event.update({ date: event.date }, { where: { id: id } });
-            return eventEdit;
+            const transactionEvent = await sequelize.transaction();
+            //actualizar el evento
+            await Event.update({ date: event.date }, { where: { codigo: code }, transaction: transactionEvent });
+            //buscar e obtener el id para poder actualizar el estadio relacionado
+            const eventUpdated = await Event.findOne({ where: { codigo: code }, transaction: transactionEvent });
+            //actualizar la entidad estadio mediante el id obtenido en al actualizar evento
+            await Stadium.update({ name: event.stadium.name, address: event.stadium.address }, { where: { id: eventUpdated.id }, transaction: transactionEvent });
+            //actualizar a los jugadores por el id del evento
+            event.players.forEach((p) => (
+                this.updatePlayer(p, eventUpdated.id)
+            ));
+            await transactionEvent.commit();
+            return { eventUpdated };
         } catch (error) {
             throw { status: 500, message: "Error update record" };
         }
     };
 
-    deleteById = async (id) => {
-        const transaction = await sequelize.transaction();
+    updatePlayer = async (player, eventId) => {
+        await Player.update({ name: player.name, surname: player.surname, phoneNumber: player.phoneNumber, email: player.email, state: player.state }, { where: { id: eventId } });
+    };
+
+    deleteById = async (code) => {
         try {
-            if (id === 0) {
-                return null;
-            };
-            const eventExist = await Event.findByPk(id, { transaction: transaction });
+            const transaction = await sequelize.transaction();
+            const eventExist = await Event.findOne({ where: { codigo: code }, transaction: transaction });
             if (eventExist) {
-                const playersDeleted = await Player.destroy({ where: { id: id } }, { transaction: transaction });
-                const eventDeleted = await Event.destroy({ where: { id: id } });
+                const stadiumDeleted = await Stadium.destroy({ where: { id: eventExist.StadiumId }, transaction: transaction });
+                const playersDeleted = await Player.destroy({ where: { EventId: eventExist.id } }, { transaction: transaction });
+                const eventDeleted = await Event.destroy({ where: { id: eventExist.id }, transaction: transaction });
                 await transaction.commit();
-                return { event: eventDeleted, players: playersDeleted };
+                return { data: [] };
             };
             return null;
         } catch (error) {
