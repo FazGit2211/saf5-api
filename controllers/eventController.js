@@ -4,12 +4,8 @@ const eventService = new EventService();
 
 export const getEvents = async (req, res) => {
     try {
-        let events = await eventService.getAll();
-        if (events.length === 0) {
-            res.status(200).json({ message: "No event found", data: [] });
-        } else {
-            res.status(200).json(events);
-        }
+        const events = await eventService.getAll();
+        res.status(200).json(events);
     } catch (error) {
         res.status(500).json({ ok: false, statusCode: 500, message: 'Error get all' });
     }
@@ -17,13 +13,9 @@ export const getEvents = async (req, res) => {
 
 export const getEvent = async (req, res) => {
     try {
-        const { id } = parseInt(req.params);
+        const { id } = req.params;
         const eventFind = await eventService.getById(id);
-        if (eventFind.equals(null)) {
-            res.status(200).json({ message: "No event found", data: [] });
-        } else {
-            res.status(200).json(eventFind);
-        }
+        res.status(200).json(eventFind);
     } catch (error) {
         res.status(500).json({ ok: false, statusCode: 500, message: `Error get by id ${id}` });
     }
