@@ -22,10 +22,10 @@ export default class PlayerService {
         };
     };
 
-    createNew = async (player) => {
+    createNew = async (idEvent, player) => {
         try {
             const transactionCreate = await sequelize.transaction();
-            const eventExist = await Event.findOne({ where: { codigo: player.codigo }, transaction: transactionCreate });
+            const eventExist = await Event.findOne({ where: { id: idEvent }, transaction: transactionCreate });
             if (eventExist) {
                 const playerAddEventId = {
                     name: player.name,
