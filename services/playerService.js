@@ -37,7 +37,7 @@ export default class PlayerService {
                 };
                 const createdPlayer = await Player.create(playerAddEventId, { transaction: transactionCreate });
                 await transactionCreate.commit();
-                return { createdPlayer };
+                return { createdRecord: true, createdPlayer };
             };
         } catch (error) {
             throw { status: 500, message: "Error update record" };
@@ -45,12 +45,12 @@ export default class PlayerService {
     };
 
 
-    update = async (idPlayer, player) => {
+    update = async (player) => {
         try {
             const transactionUpdate = await sequelize.transaction();
-            await Player.update({ name: player.name, surname: player.surname, phoneNumber: player.phoneNumber, email: player.email, state: player.state }, { where: { id: idPlayer }, transaction: transactionUpdate });
+            await Player.update({ name: player.name, surname: player.surname, phoneNumber: player.phoneNumber, email: player.email, state: player.state }, { where: { id: player.id }, transaction: transactionUpdate });
             await transactionUpdate.commit();
-            return { updated: player };
+            return { updatedRecord: true };
         } catch (error) {
             throw { status: 500, message: "Error update record" };
         };
@@ -61,7 +61,7 @@ export default class PlayerService {
             const transactionDelete = await sequelize.transaction();
             const playersDeleted = await Player.destroy({ where: { id: idPlayer } }, { transaction: transactionDelete });
             await transactionDelete.commit();
-            return { deletedRow: playersDeleted };
+            return { deletedRecord: true };
         } catch (error) {
             throw { status: 500, message: "Error update record" };
         };

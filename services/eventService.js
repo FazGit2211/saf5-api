@@ -47,12 +47,8 @@ export default class EventService {
             const transactionUpdate = await sequelize.transaction();
             //actualizar el evento
             await Event.update({ date: event.date }, { where: { id: idEvent }, transaction: transactionUpdate });
-            //buscar e obtener el id para poder actualizar el estadio relacionado
-            const eventUpdated = await Event.findOne({ where: { id: idEvent }, transaction: transactionUpdate });
-            //actualizar la entidad estadio mediante el id obtenido en al actualizar evento
-            await Stadium.update({ name: event.stadium.name, address: event.stadium.address }, { where: { id: eventUpdated.id }, transaction: transactionUpdate });
             await transactionUpdate.commit();
-            return { eventUpdated };
+            return { updated: true };
         } catch (error) {
             throw { status: 500, message: "Error update record" };
         }

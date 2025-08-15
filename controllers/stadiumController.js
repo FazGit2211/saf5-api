@@ -38,12 +38,12 @@ export const createNew = async (req, res) => {
 
 export const update = async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
-        const stadiumEdit = await stadiumService.edit(req.body, id);
-        if (stadiumEdit.equals(null)) {
-            res.status(200).json({ message: "Empty values" });
-        }
-        res.status(200).json({ err: false, message: "Update record ok", data: stadiumEdit })
+        const stadiumEdit = await stadiumService.edit(req.body);
+        if (stadiumEdit.updatedRecord) {
+            res.status(200).json({ ok: true, statusCode: 200, message: "Update ok", info: stadiumEdit });
+        } else {
+            res.status(200).json({ ok: true, statusCode: 200, info: "Error update record." });
+        };
     } catch (error) {
         throw { status: 500, message: "Error update record" };
     }

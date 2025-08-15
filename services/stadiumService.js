@@ -1,3 +1,4 @@
+import sequelize from "../config/dbSequelize.js";
 import Stadium from "../models/stadiumModelSequelize.js";
 
 export default class StadiumService {
@@ -30,13 +31,12 @@ export default class StadiumService {
         }
     };
 
-    edit = async (stadium, id) => {
+    edit = async (stadium) => {
         try {
-            const stadiumEdit = stadium;
-            if ((stadiumEdit.name === "") && (stadiumEdit.address === "")) {
-                return null;
-            }
-            return await Stadium.update(stadiumEdit, { where: { stadiumId: id } });
+            const transactionUpdate = await sequelize.transaction();
+            await Stadium.update({ name: stadium.name, address: stadium.address }, { where: { id: stadium.id }, transaction: transactionUpdate });
+            await transactionUpdate.commit();
+            return { updatedRecord: true };
         } catch (error) {
             throw { status: 500, message: "Error update record" };
         }

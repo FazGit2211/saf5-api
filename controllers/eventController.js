@@ -43,7 +43,11 @@ export const updateEvent = async (req, res) => {
         const idEvent = parseInt(req.params.id);
         if (idEvent !== undefined || idEvent !== null) {
             const eventUpdated = await eventService.updateById(req.body, idEvent);
-            res.status(200).json({ ok: true, statusCode: 200, message: "Updated ok", info: eventUpdated });
+            if(eventUpdated.updated){
+                res.status(200).json({ ok: true, statusCode: 200, message: "Updated ok", info: eventUpdated });
+            }else{
+                res.status(200).json({ ok: true, statusCode: 200, data: "Error Update" });
+            }
         } else {
             res.status(200).json({ ok: true, statusCode: 200, data: "Undefined or Empty code." });
         };
