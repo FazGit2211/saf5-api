@@ -44,7 +44,7 @@ export const createPlayerAddEvent = async (req, res) => {
         if (idEvent !== undefined && idEvent !== null) {
             const playerCreated = await playerService.createNew(idEvent, req.body);
             if (playerCreated.createdRecord) {
-                es.status(200).json({ ok: true, statusCode: 200, message: "Created ok", info: playerCreated .createdRecord});
+                res.status(200).json({ ok: true, statusCode: 200, message: "Created ok", info: playerCreated .createdRecord});
             } else {
                 res.status(200).json({ ok: true, statusCode: 200, info: "Error create record." });
             };

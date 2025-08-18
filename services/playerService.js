@@ -35,9 +35,9 @@ export default class PlayerService {
                     state: player.state,
                     EventId: eventExist.id
                 };
-                const createdPlayer = await Player.create(playerAddEventId, { transaction: transactionCreate });
+                await Player.create(playerAddEventId, { transaction: transactionCreate });
                 await transactionCreate.commit();
-                return { createdRecord: true, createdPlayer };
+                return { createdRecord: true };
             };
         } catch (error) {
             throw { status: 500, message: "Error update record" };
@@ -59,7 +59,7 @@ export default class PlayerService {
     delete = async (idPlayer) => {
         try {
             const transactionDelete = await sequelize.transaction();
-            const playersDeleted = await Player.destroy({ where: { id: idPlayer } }, { transaction: transactionDelete });
+            await Player.destroy({ where: { id: idPlayer } }, { transaction: transactionDelete });
             await transactionDelete.commit();
             return { deletedRecord: true };
         } catch (error) {

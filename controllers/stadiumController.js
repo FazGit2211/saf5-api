@@ -40,7 +40,7 @@ export const update = async (req, res) => {
     try {
         const stadiumEdit = await stadiumService.edit(req.body);
         if (stadiumEdit.updatedRecord) {
-            res.status(200).json({ ok: true, statusCode: 200, message: "Update ok", info: stadiumEdit });
+            res.status(200).json({ ok: true, statusCode: 200, message: "Update ok", info: stadiumEdit.updatedRecord });
         } else {
             res.status(200).json({ ok: true, statusCode: 200, info: "Error update record." });
         };
