@@ -10,8 +10,8 @@ const Event = sequelize.define('Event', {
     codigo: {
         type: DataTypes.STRING,
         allowNull: false
-    }
-});
+    },
+}, { tableName: 'Events' });
 
 Event.hasMany(Player);
 Player.belongsTo(Event);

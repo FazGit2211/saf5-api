@@ -21,7 +21,7 @@ const Player = sequelize.define('Player', {
     state: {
         type: DataTypes.STRING,
         allowNull: true
-    }
-});
+    },
+},{ tableName: 'Players' });
 
 export default Player;

@@ -10,7 +10,7 @@ const Stadium = sequelize.define('Stadium', {
         type: DataTypes.STRING,
         allowNull: false,
     }
-});
+}, { tableName: 'Stadiums' });
 
 Stadium.hasOne(Event);
 Event.belongsTo(Stadium);
