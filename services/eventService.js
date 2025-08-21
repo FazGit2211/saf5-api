@@ -15,7 +15,10 @@ export default class EventService {
 
     getById = async (idEvent) => {
         try {
-            return await Event.findOne({ where: { codigo: idEvent }, include: [Stadium, Player] });
+            if (idEvent !== undefined || idEvent !== null) {
+                return await Event.findOne({ where: { codigo: idEvent }, include: [Stadium, Player] });
+            };
+            return null;
         } catch (error) {
             throw { status: 500, message: "Error get record" };
         }
@@ -36,7 +39,7 @@ export default class EventService {
             //crear a todos los jugadores al mismo tiempo
             const createPlayers = await Player.bulkCreate(addPlayers, { transaction: transactionCreate });
             await transactionCreate.commit();
-            return { eventCreated, playersCreated: createPlayers, stadium: stadiumCreated };
+            return { eventCreated: true };
         } catch (error) {
             throw { status: 500, message: "Error created record" };
         }

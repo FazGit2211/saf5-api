@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { createPlayerAddEvent, updatePlayer, deletePlayer } from "../controllers/playerController.js";
 const routes = Router();
-
-routes.post("/:id", createPlayerAddEvent);
-routes.put("/", updatePlayer);
-routes.delete("/:id", deletePlayer);
+routes.post("/api/player/:id", createPlayerAddEvent);
+routes.put("/api/player/", updatePlayer);
+routes.delete("/api/player/:id", deletePlayer);
 export default routes;

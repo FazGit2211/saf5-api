@@ -1,5 +1,6 @@
 import sequelize from "../config/dbSequelize.js";
-import User from "../models/userModelSequelize.js"
+import User from "../models/userModelSequelize.js";
+import bcryp from "bcrypt";
 
 export default class UserService {
     loginUser = async (user) => {
@@ -13,7 +14,8 @@ export default class UserService {
     userSignin = async (user) => {
         try {
             const transactionCreate = await sequelize.transaction();
-            const userCreated = await User.create({ username: user.username, hashedPassword: user.password }, { transaction: transactionCreate });
+            const hashedPassword = await bcryp.hash(user.password,10);
+            const userCreated = await User.create({ username: user.username, password: hashedPassword }, { transaction: transactionCreate });
             await transactionCreate.commit();
             return { created: true, user: userCreated };
         } catch (error) {
