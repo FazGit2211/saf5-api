@@ -5,4 +5,5 @@ const sequelize = new Sequelize('b3o488oknfuuzg4znlfi', 'uunzsc1sxulrb6lz', 'Eyt
     dialect: 'mysql'
 });
 
+
 export default sequelize;
