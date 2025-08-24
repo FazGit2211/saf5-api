@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbSequelize.js";
+import Event from "./eventModelSequelize.js";
 
 const User = sequelize.define('User', {
     username: {
@@ -12,5 +13,6 @@ const User = sequelize.define('User', {
         allowNull: false,
     }
 }, {  tableName: 'Users' });
-
+User.hasMany(Event);
+Event.belongsTo(User);
 export default User;

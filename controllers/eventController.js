@@ -80,3 +80,19 @@ export const deleteEvent = async (req, res) => {
         errors.error500(req, res, error);
     }
 };
+
+export const getEventByUser = async (req, res) => {
+    try {
+        const userId = parseInt(req.params.id);
+        if (userId !== undefined || userId !== null) {
+            const eventUser = await eventService.getByUserId();
+            if (eventUser.length > 0) {
+                res.status(200).json({ message: "Get success", info: events });
+            } else {
+                errors.error404(req, res, { info: "Event not found." });
+            }
+        };
+    } catch (error) {
+        errors.error500(req, res, error);
+    }
+}

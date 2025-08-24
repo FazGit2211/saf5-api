@@ -30,7 +30,7 @@ export default class EventService {
             //crear primero el objeto estadio por la relacion uno a uno entre evento
             const stadiumCreated = await Stadium.create({ name: event.stadium.name, address: event.stadium.address }, { transaction: transactionCreate });
             //crear el objeto evento y setearle el estadio id y despues relacionar con los jugadores 
-            const eventCreated = await Event.create({ codigo: event.codigo, date: event.date, StadiumId: stadiumCreated.id }, { transaction: transactionCreate });
+            const eventCreated = await Event.create({ codigo: event.codigo, date: event.date, StadiumId: stadiumCreated.id, UserId: event.id }, { transaction: transactionCreate });
             //recorrer y asociar a cada uno de los jugadores con el evento para poder crear la relacion del lado muchos
             const players = event.players;
             const addPlayers = players.map((elem) => ({
@@ -71,6 +71,14 @@ export default class EventService {
             return null;
         } catch (error) {
             throw { status: 500, message: "Error deleted record" };
+        }
+    };
+
+    getByUserId = async (userId) => {
+        try {
+            return await Event.findAll({ where: { UserId: userId }, include: [Stadium, Player] });
+        } catch (error) {
+            throw { status: 500, message: "Error get record" };
         }
     };
 }

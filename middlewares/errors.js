@@ -8,13 +8,13 @@ const errors = {
     error401: (req, res, err) => {
         res.status(401).json({
             title: "Error 401 Authorization Required",
-            message: err.message,
+            message: err,
         });
     },
     error403: (req, res, err) => {
         res.status(403).json({
             title: "Error 403 Forbidden",
-            message: err.message,
+            message: err,
         });
     },
     error404: (req, res, err) => {
@@ -23,7 +23,7 @@ const errors = {
             message: err,
         });
     },
-    error500: () => {
+    error500: (req, res, err) => {
         res.status(500).json({
             title: "Error 500 Internal Server",
             message: err.message,

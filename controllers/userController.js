@@ -6,11 +6,9 @@ export const login = async (req, res) => {
     try {
         const userLogin = await userService.loginUser(req.body);
         if (userLogin !== null) {
-            res.status(200).json({ ok: true, statusCode: 200, message: "Login ok", info: {} });
-            req.session.user = userLogin;
+            res.status(200).json({ message: "Login ok", info: userLogin });
         } else {
-            let errorMsj = { status: 401, message: "User not exist" };
-            errors.error401(req, res, errorMsj);
+            errors.error401(req, res, { info: "User not exist" });
         }
     } catch (error) {
         errors.error500(req, res, error);
@@ -23,10 +21,10 @@ export const signin = async (req, res) => {
         if (userSignin.created) {
             res.status(200).json({ ok: true, statusCode: 200, message: "Signin ok", info: userSignin.user });
         } else {
-            res.status(200).json({ ok: true, statusCode: 200, message: "Error signin", info: {} });
+            errors.error400(req, res, "Error signin");
         };
     } catch (error) {
-        res.status(500).json({ ok: false, statusCode: 500, message: "Error signin user" });
+        errors.error500(req, res, error);
     };
 };
 
