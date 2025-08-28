@@ -6,7 +6,17 @@ import bcryp from "bcrypt";
 export default class UserService {
     loginUser = async (user) => {
         try {
-            return await User.findOne({ where: { username: user.username }, include: [Event] });
+            const userExist = await User.findOne({ where: { username: user.username }, include: [Event] });
+            if (userExist !== null) {
+                const isMatch = await bcryp.compare(user.password, userExist.password);
+                if (!isMatch) {
+                    return null;
+                } else {
+                    return userExist;
+                };
+            } else {
+                return null;
+            };
         } catch (error) {
             throw { status: 500, message: "Error user" };
         }
@@ -21,6 +31,14 @@ export default class UserService {
             return { created: true, user: userCreated };
         } catch (error) {
             throw { status: 500, message: "Error user create" };
+        };
+    };
+
+    getByIdUser = async (userId) => {
+        try {
+            return await User.findByPk(userId, { include: [Event] });
+        } catch (error) {
+            throw { status: 500, message: "Error user" };
         };
     };
 }

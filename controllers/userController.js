@@ -28,4 +28,20 @@ export const signin = async (req, res) => {
     };
 };
 
-export const logout = (req, res) => { };
+export const getUser = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (id !== undefined) {
+            const userExist = await userService.getByIdUser(id);
+            if (userExist !== undefined) {
+                res.status(200).json({ info: userExist });
+            } else {
+                errors.error401(req, res, { info: "User not exist" });
+            };
+        } else {
+            errors.error400(req, res, { info: "Empty values" });
+        };
+    } catch (error) {
+        errors.error500(req, res, error);
+    };
+};
