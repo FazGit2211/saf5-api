@@ -7,7 +7,7 @@ const Event = sequelize.define('Event', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    codigo: {
+    code: {
         type: DataTypes.STRING,
         allowNull: false
     },

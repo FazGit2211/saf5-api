@@ -16,7 +16,7 @@ const Player = sequelize.define('Player', {
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     state: {
         type: DataTypes.STRING,

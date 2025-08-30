@@ -5,7 +5,6 @@ import routesEvents from "./routes/eventRoutes.js";
 import routesStadiums from "./routes/stadiumRoutes.js";
 import routesPlayer from "./routes/playerRoutes.js";
 import routesUser from "./routes/userRoutes.js";
-import session from "express-session";
 import sequelize from "./config/dbSequelize.js";
 
 const app = express();

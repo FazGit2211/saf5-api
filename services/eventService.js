@@ -17,7 +17,7 @@ export default class EventService {
     getById = async (idEvent) => {
         try {
             if (idEvent !== undefined || idEvent !== null) {
-                return await Event.findOne({ where: { codigo: idEvent }, include: [Stadium, Player, User] });
+                return await Event.findOne({ where: { code: idEvent }, include: [Stadium, Player, User] });
             };
             return null;
         } catch (error) {
@@ -26,18 +26,12 @@ export default class EventService {
     };
 
     createNew = async (event) => {
-        const transactionCreate = await sequelize.transaction();
         try {
+            const transactionCreate = await sequelize.transaction();
             //crear primero el objeto estadio por la relacion uno a uno entre evento
             const stadiumCreated = await Stadium.create({ name: event.stadium.name, address: event.stadium.address }, { transaction: transactionCreate });
-            //buscar usuario si existe
-            const userExist = await User.findByPk(event.id);
-            if (userExist) {
-                await Event.create({ codigo: event.codigo, date: event.date, StadiumId: stadiumCreated.id, UserId: userExist.id }, { transaction: transactionCreate });
-            } else {
-                //crear el objeto evento y setearle el estadio id y despues relacionar con los jugadores 
-                await Event.create({ codigo: event.codigo, date: event.date, StadiumId: stadiumCreated.id, UserId: event.id }, { transaction: transactionCreate });
-            }
+            //crear el objeto evento y setearle el estadio id y despues relacionar con los jugadores 
+            const eventCreated = await Event.create({ code: event.code, date: event.date, StadiumId: stadiumCreated.id, UserId: event.userId }, { transaction: transactionCreate });
             //recorrer y asociar a cada uno de los jugadores con el evento para poder crear la relacion del lado muchos
             const players = event.players;
             const addPlayers = players.map((elem) => ({
@@ -69,9 +63,9 @@ export default class EventService {
             const transactionDelete = await sequelize.transaction();
             const eventExist = await Event.findOne({ where: { id: idEvent }, transaction: transactionDelete });
             if (eventExist) {
-                const stadiumDeleted = await Stadium.destroy({ where: { id: eventExist.StadiumId }, transaction: transactionDelete });
-                const playersDeleted = await Player.destroy({ where: { EventId: eventExist.id } }, { transaction: transactionDelete });
-                const eventDeleted = await Event.destroy({ where: { id: eventExist.id }, transaction: transactionDelete });
+                await Stadium.destroy({ where: { id: eventExist.StadiumId }, transaction: transactionDelete });
+                await Player.destroy({ where: { EventId: eventExist.id } }, { transaction: transactionDelete });
+                await Event.destroy({ where: { id: eventExist.id }, transaction: transactionDelete });
                 await transactionDelete.commit();
                 return { data: [] };
             };
