@@ -30,8 +30,13 @@ export default class EventService {
             const transactionCreate = await sequelize.transaction();
             //crear primero el objeto estadio por la relacion uno a uno entre evento
             const stadiumCreated = await Stadium.create({ name: event.stadium.name, address: event.stadium.address }, { transaction: transactionCreate });
+            //verificar si el userId es un número mayor a 0
+            let userId = null;
+            if (event.id === 0) {
+                event.id = userId;
+            };
             //crear el objeto evento y setearle el estadio id y despues relacionar con los jugadores 
-            const eventCreated = await Event.create({ code: event.code, date: event.date, StadiumId: stadiumCreated.id, UserId: event.userId }, { transaction: transactionCreate });
+            const eventCreated = await Event.create({ code: event.code, date: event.date, StadiumId: stadiumCreated.id, UserId: userId }, { transaction: transactionCreate });
             //recorrer y asociar a cada uno de los jugadores con el evento para poder crear la relacion del lado muchos
             const players = event.players;
             const addPlayers = players.map((elem) => ({
